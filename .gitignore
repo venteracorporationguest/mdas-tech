@@ -2,5 +2,6 @@
 .DS_Store
 ansible/*.retry
 terraform/.terraform
-keys/
+keys/mdas.key
+keys/mdas.pem
 terraform/terraform.*
