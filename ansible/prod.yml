@@ -1,0 +1,22 @@
+- hosts: prod
+
+  tasks:
+
+    - name: Ping Master
+      ping:
+
+    - name: Copy Private SSH Key
+      copy:
+        src: ../keys/mdas.pem
+        dest: /home/ec2-user/.ssh/id_rsa
+        owner: ec2-user
+        group: ec2-user
+        mode: 0400
+
+    - name: Copy Public SSH Key
+      copy:
+        src: ../keys/mdas.pub
+        dest: /home/ec2-user/.ssh/id_rsa.pub
+        owner: ec2-user
+        group: ec2-user
+        mode: 0644

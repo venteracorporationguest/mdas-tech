@@ -1,0 +1,8 @@
+[science]
+science.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
+
+[test]
+test.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
+
+[prod]
+prod.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python

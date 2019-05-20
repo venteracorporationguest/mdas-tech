@@ -1,0 +1,6 @@
+.idea/
+.DS_Store
+ansible/*.retry
+terraform/.terraform
+keys/
+terraform/terraform.*
