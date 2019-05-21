@@ -1,0 +1,11 @@
+- name: run the playbook tasks on the localhost
+  hosts: local
+  connection: local
+
+  tasks:
+
+  - name: Create Keys Directory
+    command: mkdir ../keys
+
+  - name: Create Keypair
+    command: ssh-keygen -f ../keys/mdas.pem -t rsa -b 2048 -m pem -N ''

@@ -1,3 +1,6 @@
+[local]
+127.0.0.1
+
 [science]
 science.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
 

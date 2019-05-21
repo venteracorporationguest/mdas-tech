@@ -656,7 +656,7 @@ resource "aws_instance" "prod-node3" {
 
 //resource "null_resource" "ansible-science" {
 //  provisioner "local-exec" {
-//    command = "sleep 60; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u ec2-user --private-key=../keys/mdas.pem ../ansible/science.yml"
+//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/science.yml"
 //  }
 //  depends_on = [
 //    "aws_instance.science-master"
@@ -665,7 +665,7 @@ resource "aws_instance" "prod-node3" {
 //
 //resource "null_resource" "ansible-test" {
 //  provisioner "local-exec" {
-//    command = "sleep 60; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u ec2-user --private-key=../keys/mdas.pem ../ansible/test.yml"
+//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/test.yml"
 //  }
 //  depends_on = [
 //    "aws_instance.test-master"
@@ -674,7 +674,7 @@ resource "aws_instance" "prod-node3" {
 //
 //resource "null_resource" "ansible-prod" {
 //  provisioner "local-exec" {
-//    command = "sleep 60; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u ec2-user --private-key=../keys/mdas.pem ../ansible/prod.yml"
+//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/prod.yml"
 //  }
 //  depends_on = [
 //    "aws_instance.prod-master"
