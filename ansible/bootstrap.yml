@@ -4,8 +4,23 @@
 
   tasks:
 
-  - name: Create Keys Directory
-    command: mkdir ../keys
+  - name: Cleanup
+    file:
+      path: '{{ item }}'
+      state: absent
+    with_items:
+      - ../keys
 
-  - name: Create Keypair
-    command: ssh-keygen -f ../keys/mdas.pem -t rsa -b 2048 -m pem -N ''
+  - name: Create Directory for SSH Keys
+    file:
+      path: ../keys
+      state: directory
+
+  - name: Generate SSH Keypair
+    command: ssh-keygen -f ../keys/mdas -t rsa -b 2048 -m pem -N ''
+
+  - name: Run Terraform - This will take some time (5 - 15 mins)
+    terraform:
+      project_path: '../terraform'
+      state: present
+      force_init: yes

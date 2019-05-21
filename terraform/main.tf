@@ -653,30 +653,3 @@ resource "aws_instance" "prod-node3" {
     Name = "Prod Node 3"
   }
 }
-
-//resource "null_resource" "ansible-science" {
-//  provisioner "local-exec" {
-//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/science.yml"
-//  }
-//  depends_on = [
-//    "aws_instance.science-master"
-//  ]
-//}
-//
-//resource "null_resource" "ansible-test" {
-//  provisioner "local-exec" {
-//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/test.yml"
-//  }
-//  depends_on = [
-//    "aws_instance.test-master"
-//  ]
-//}
-//
-//resource "null_resource" "ansible-prod" {
-//  provisioner "local-exec" {
-//    command = "sleep 120; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook --inventory-file=../ansible/hosts -u centos --private-key=../keys/mdas.pem ../ansible/prod.yml"
-//  }
-//  depends_on = [
-//    "aws_instance.prod-master"
-//  ]
-//}

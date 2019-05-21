@@ -1,7 +1,6 @@
 .idea/
 .DS_Store
+keys/
 ansible/*.retry
-terraform/.terraform
-keys/mdas.key
-keys/mdas.pem
-terraform/terraform.*
+.terraform
+terraform.*
