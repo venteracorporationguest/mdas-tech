@@ -1,4 +1,4 @@
-- name: run the playbook tasks on the localhost
+- name: Automated Data Science Environment
   hosts: local
   connection: local
 
@@ -19,8 +19,12 @@
   - name: Generate SSH Keypair
     command: ssh-keygen -f ../keys/mdas -t rsa -b 2048 -m pem -N ''
 
-  - name: Run Terraform - This will take some time (5 - 15 mins)
+
+  - name: Run Terraform - This may take some time...
     terraform:
       project_path: '../terraform'
       state: present
       force_init: yes
+
+- name: Data Science Environment
+  include: science.yml
