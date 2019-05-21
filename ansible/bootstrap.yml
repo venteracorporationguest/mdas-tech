@@ -4,21 +4,35 @@
 
   tasks:
 
-  - name: Cleanup
-    file:
-      path: '{{ item }}'
-      state: absent
-    with_items:
-      - ../keys
+  - name: Check that keys Directory Exists
+    stat:
+      path: ../keys
+    register: keys_directory
 
   - name: Create Directory for SSH Keys
     file:
       path: ../keys
       state: directory
+    when: keys_directory.stat.exists == False
+
+  - name: Check that Key File Exists
+    stat:
+      path: ../keys/mdas
+    register: keys_file
 
   - name: Generate SSH Keypair
     command: ssh-keygen -f ../keys/mdas -t rsa -b 2048 -m pem -N ''
+    when: keys_file.stat.exists == False
 
+  - name: Change Private Key Permissions
+    file:
+      path: ../keys/mdas
+      mode: '0400'
+
+  - name: Change Public Key Permissions
+    file:
+      path: ../keys/mdas.pub
+      mode: '0644'
 
   - name: Run Terraform - This may take some time...
     terraform:
@@ -27,4 +41,4 @@
       force_init: yes
 
 - name: Data Science Environment
-  include: science.yml
+  import_playbook: science.yml

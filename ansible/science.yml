@@ -7,7 +7,7 @@
 
     - name: Copy Private SSH Key
       copy:
-        src: ../keys/mdas.pem
+        src: ../keys/mdas
         dest: /home/centos/.ssh/id_rsa
         owner: centos
         group: centos

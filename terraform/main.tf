@@ -653,3 +653,15 @@ resource "aws_instance" "prod-node3" {
     Name = "Prod Node 3"
   }
 }
+
+### Give time for environment to stabilize
+resource "null_resource" "ansible-prod" {
+  provisioner "local-exec" {
+    command = "sleep 120"
+  }
+  depends_on = [
+    "aws_instance.science-master",
+    "aws_instance.test-master",
+    "aws_instance.prod-master"
+  ]
+}
