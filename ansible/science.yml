@@ -20,3 +20,35 @@
         owner: centos
         group: centos
         mode: 0644
+
+    - name: Update Yum Packages (3-5 mins)
+      yum:
+        name: "*"
+        state: latest
+      become: yes
+
+    - name: Install CentOS SCL
+      yum:
+        name: centos-release-scl
+        state: latest
+      become: yes
+
+    - name: Install Python3
+      yum:
+        name: rh-python36
+        state: latest
+      become: yes
+
+    - name: Enable Python3
+      command: scl enable rh-python36 bash
+
+    - name: Install Git
+      yum:
+        name: git
+        state: latest
+      become: yes
+
+    - name: Clone Kubespray
+      git:
+        repo: https://github.com/kubernetes-sigs/kubespray
+        dest: /home/centos

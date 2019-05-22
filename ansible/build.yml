@@ -34,7 +34,7 @@
       path: ../keys/mdas.pub
       mode: '0644'
 
-  - name: Run Terraform - This may take some time...
+  - name: Run Terraform (3-5 mins)
     terraform:
       project_path: '../terraform'
       state: present
