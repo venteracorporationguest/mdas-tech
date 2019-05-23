@@ -25,12 +25,12 @@ variable "vpc_cidr" {
 
 variable "public_subnet_cidr" {
   description = "CIDR for the public subnet"
-  default = "10.0.1.0/24"
+  default = "10.0.0.0/24"
 }
 
 variable "private_subnet_cidr" {
   description = "CIDR for the private subnet"
-  default = "10.0.2.0/24"
+  default = "10.0.1.0/24"
 }
 
 variable "ami" {
@@ -170,6 +170,19 @@ resource "aws_internet_gateway" "science-gw" {
     Name = "Science VPC IGW"
   }
 }
+resource "aws_eip" "science-nat-eip" {
+  vpc      = true
+}
+resource "aws_nat_gateway" "science-nat-gw" {
+  allocation_id = "${aws_eip.science-nat-eip.id}"
+  subnet_id = "${aws_subnet.science-public-subnet.id}"
+  depends_on = ["aws_internet_gateway.science-gw"]
+
+  tags = {
+    Name = "Science NAT GW"
+  }
+}
+
 resource "aws_internet_gateway" "test-gw" {
   vpc_id = "${aws_vpc.test-vpc.id}"
 
@@ -177,6 +190,19 @@ resource "aws_internet_gateway" "test-gw" {
     Name = "Test VPC IGW"
   }
 }
+resource "aws_eip" "test-nat-eip" {
+  vpc      = true
+}
+resource "aws_nat_gateway" "test-nat-gw" {
+  allocation_id = "${aws_eip.test-nat-eip.id}"
+  subnet_id = "${aws_subnet.test-public-subnet.id}"
+  depends_on = ["aws_internet_gateway.test-gw"]
+
+  tags = {
+    Name = "Test NAT GW"
+  }
+}
+
 resource "aws_internet_gateway" "prod-gw" {
   vpc_id = "${aws_vpc.prod-vpc.id}"
 
@@ -184,10 +210,21 @@ resource "aws_internet_gateway" "prod-gw" {
     Name = "Prod VPC IGW"
   }
 }
+resource "aws_eip" "prod-nat-eip" {
+  vpc      = true
+}
+resource "aws_nat_gateway" "prod-nat-gw" {
+  allocation_id = "${aws_eip.prod-nat-eip.id}"
+  subnet_id = "${aws_subnet.prod-public-subnet.id}"
+  depends_on = ["aws_internet_gateway.prod-gw"]
 
+  tags = {
+    Name = "Prod NAT GW"
+  }
+}
 
 ##### Route Table #####
-resource "aws_route_table" "science-rt" {
+resource "aws_route_table" "science-public-rt" {
   vpc_id = "${aws_vpc.science-vpc.id}"
 
   route {
@@ -199,7 +236,20 @@ resource "aws_route_table" "science-rt" {
     Name = "Science Public Subnet RT"
   }
 }
-resource "aws_route_table" "test-rt" {
+resource "aws_route_table" "science-private-rt" {
+  vpc_id = "${aws_vpc.science-vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.science-nat-gw.id}"
+  }
+
+  tags {
+    Name = "Science Private Subnet RT"
+  }
+}
+
+resource "aws_route_table" "test-public-rt" {
   vpc_id = "${aws_vpc.test-vpc.id}"
 
   route {
@@ -211,7 +261,20 @@ resource "aws_route_table" "test-rt" {
     Name = "Test Public Subnet RT"
   }
 }
-resource "aws_route_table" "prod-rt" {
+resource "aws_route_table" "test-private-rt" {
+  vpc_id = "${aws_vpc.test-vpc.id}"
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.test-nat-gw.id}"
+  }
+
+  tags {
+    Name = "Test Private Subnet RT"
+  }
+}
+
+resource "aws_route_table" "prod-public-rt" {
   vpc_id = "${aws_vpc.prod-vpc.id}"
 
   route {
@@ -223,18 +286,45 @@ resource "aws_route_table" "prod-rt" {
     Name = "Prod Public Subnet RT"
   }
 }
+resource "aws_route_table" "prod-private-rt" {
+  vpc_id = "${aws_vpc.prod-vpc.id}"
 
-resource "aws_route_table_association" "science-rta" {
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.prod-nat-gw.id}"
+  }
+
+  tags {
+    Name = "Prod Private Subnet RT"
+  }
+}
+
+
+resource "aws_route_table_association" "science-public-rta" {
   subnet_id = "${aws_subnet.science-public-subnet.id}"
-  route_table_id = "${aws_route_table.science-rt.id}"
+  route_table_id = "${aws_route_table.science-public-rt.id}"
 }
-resource "aws_route_table_association" "test-rta" {
+resource "aws_route_table_association" "science-private-rta" {
+  subnet_id = "${aws_subnet.science-private-subnet.id}"
+  route_table_id = "${aws_route_table.science-private-rt.id}"
+}
+
+resource "aws_route_table_association" "test-public-rta" {
   subnet_id = "${aws_subnet.test-public-subnet.id}"
-  route_table_id = "${aws_route_table.test-rt.id}"
+  route_table_id = "${aws_route_table.test-public-rt.id}"
 }
-resource "aws_route_table_association" "prod-rta" {
+resource "aws_route_table_association" "test-private-rta" {
+  subnet_id = "${aws_subnet.test-private-subnet.id}"
+  route_table_id = "${aws_route_table.test-private-rt.id}"
+}
+
+resource "aws_route_table_association" "prod-public-rta" {
   subnet_id = "${aws_subnet.prod-public-subnet.id}"
-  route_table_id = "${aws_route_table.prod-rt.id}"
+  route_table_id = "${aws_route_table.prod-public-rt.id}"
+}
+resource "aws_route_table_association" "prod-private-rta" {
+  subnet_id = "${aws_subnet.prod-private-subnet.id}"
+  route_table_id = "${aws_route_table.prod-private-rt.id}"
 }
 
 
@@ -293,14 +383,14 @@ resource "aws_security_group" "science-private-sg"{
     from_port = -1
     to_port = -1
     protocol = "icmp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = 0
+    to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   egress {
@@ -369,14 +459,14 @@ resource "aws_security_group" "test-private-sg"{
     from_port = -1
     to_port = -1
     protocol = "icmp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = 0
+    to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   egress {
@@ -387,7 +477,7 @@ resource "aws_security_group" "test-private-sg"{
   }
 
   tags {
-    Name = "Science Private SG"
+    Name = "Test Private SG"
   }
 }
 
@@ -445,14 +535,14 @@ resource "aws_security_group" "prod-private-sg"{
     from_port = -1
     to_port = -1
     protocol = "icmp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
+    from_port = 0
+    to_port = 65535
     protocol = "tcp"
-    cidr_blocks = ["10.0.1.0/24"]
+    cidr_blocks = ["10.0.0.0/24"]
   }
 
   egress {
@@ -477,7 +567,7 @@ resource "aws_instance" "science-master" {
   vpc_security_group_ids      = ["${aws_security_group.science-public-sg.id}"]
   associate_public_ip_address = true
   source_dest_check           = false
-  private_ip                  = "10.0.1.10"
+  private_ip                  = "10.0.0.10"
 
   tags {
     Name = "Science Master"
@@ -497,7 +587,7 @@ resource "aws_instance" "science-node1" {
   subnet_id = "${aws_subnet.science-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.10"
+  private_ip = "10.0.1.10"
 
   tags {
     Name = "Science Node 1"
@@ -510,7 +600,7 @@ resource "aws_instance" "science-node2" {
   subnet_id = "${aws_subnet.science-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.11"
+  private_ip = "10.0.1.11"
 
   tags {
     Name = "Science Node 2"
@@ -523,7 +613,7 @@ resource "aws_instance" "science-node3" {
   subnet_id = "${aws_subnet.science-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.12"
+  private_ip = "10.0.1.12"
 
   tags {
     Name = "Science Node 3"
@@ -539,7 +629,7 @@ resource "aws_instance" "test-master" {
   vpc_security_group_ids      = ["${aws_security_group.test-public-sg.id}"]
   associate_public_ip_address = true
   source_dest_check           = false
-  private_ip                  = "10.0.1.10"
+  private_ip                  = "10.0.0.10"
 
   tags {
     Name = "Test Master"
@@ -559,7 +649,7 @@ resource "aws_instance" "test-node1" {
   subnet_id = "${aws_subnet.test-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.10"
+  private_ip = "10.0.1.10"
 
   tags {
     Name = "Test Node 1"
@@ -572,7 +662,7 @@ resource "aws_instance" "test-node2" {
   subnet_id = "${aws_subnet.test-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.11"
+  private_ip = "10.0.1.11"
 
   tags {
     Name = "Test Node 2"
@@ -585,7 +675,7 @@ resource "aws_instance" "test-node3" {
   subnet_id = "${aws_subnet.test-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.12"
+  private_ip = "10.0.1.12"
 
   tags {
     Name = "Test Node 3"
@@ -601,7 +691,7 @@ resource "aws_instance" "prod-master" {
   vpc_security_group_ids      = ["${aws_security_group.prod-public-sg.id}"]
   associate_public_ip_address = true
   source_dest_check           = false
-  private_ip                  = "10.0.1.10"
+  private_ip                  = "10.0.0.10"
 
   tags {
     Name = "Prod Master"
@@ -621,7 +711,7 @@ resource "aws_instance" "prod-node1" {
   subnet_id = "${aws_subnet.prod-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.10"
+  private_ip = "10.0.1.10"
 
   tags {
     Name = "Prod Node 1"
@@ -634,7 +724,7 @@ resource "aws_instance" "prod-node2" {
   subnet_id = "${aws_subnet.prod-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.11"
+  private_ip = "10.0.1.11"
 
   tags {
     Name = "Prod Node 2"
@@ -647,7 +737,7 @@ resource "aws_instance" "prod-node3" {
   subnet_id = "${aws_subnet.prod-private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
-  private_ip = "10.0.2.12"
+  private_ip = "10.0.1.12"
 
   tags {
     Name = "Prod Node 3"
