@@ -8,17 +8,17 @@
     - name: Copy Private SSH Key
       copy:
         src: ../keys/mdas
-        dest: /home/centos/.ssh/id_rsa
-        owner: centos
-        group: centos
+        dest: /home/ec2-user/.ssh/id_rsa
+        owner: ec2-user
+        group: ec2-user
         mode: 0400
 
     - name: Copy Public SSH Key
       copy:
         src: ../keys/mdas.pub
-        dest: /home/centos/.ssh/id_rsa.pub
-        owner: centos
-        group: centos
+        dest: /home/ec2-user/.ssh/id_rsa.pub
+        owner: ec2-user
+        group: ec2-user
         mode: 0644
 
     - name: Update Yum Packages (3-5 mins)
@@ -27,59 +27,71 @@
         state: latest
       become: yes
 
-    - name: Install CentOS SCL
+#    - name: Install SCL
+#      yum:
+#        name: ec2-user-release-scl
+#        state: latest
+#      become: yes
+
+    - name: Install Dependencies
       yum:
-        name: centos-release-scl
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - git
+        - python3
+        - python3-pip
         state: latest
       become: yes
 
-    - name: Install Python3
-      yum:
-        name: rh-python36
-        state: latest
+    - name: Symlink Pip3
+      file:
+        src: /usr/bin/pip3
+        dest: /usr/bin/pip
+        state: link
       become: yes
 
-    - name: Create Python36 Profile Enabler
-      copy:
-        dest: "/etc/profile.d/enable_python36.sh"
-        content: |
-          #!/bin/bash
-          source scl_source enable rh-python36
-      become: yes
+#    - name: Create Python36 Profile Enabler
+#      copy:
+#        dest: "/etc/profile.d/enable_python36.sh"
+#        content: |
+#          #!/bin/bash
+#          source scl_source enable rh-python36
+#      become: yes
 
-    - name: Install Git
-      yum:
-        name: git
-        state: latest
+    - name: Check Python Installed
+      shell: python --version
+      register: python_version
+      ignore_errors: yes
+
+    - name: Set Python Default
+      command: alternatives --set python /usr/bin/python3
       become: yes
+      when: python_version.stdout != "Python 3.6.8"
 
     - name: Clone Kubespray
       git:
         repo: https://github.com/kubernetes-sigs/kubespray
-        dest: /home/centos/kubespray
-
-    - name: Get Python Version
-      command: python --version
-      register: python_version
+        dest: /home/ec2-user/kubespray
 
     - name: Install Kubespray Requirements
-      shell: /opt/rh/rh-python36/root/usr/bin/pip install -r requirements.txt
+      shell: pip install -r requirements.txt
       args:
-        chdir: "/home/centos/kubespray"
+        chdir: "/home/ec2-user/kubespray"
       become: yes
-      when: python_version.stdout == "Python 3.6.3"
+      when: python_version.stdout == "Python 3.6.8"
 
     - name: Copy Cluster Config File
       shell: cp -rfp inventory/sample inventory/mycluster
       args:
-        chdir: "/home/centos/kubespray"
+        chdir: "/home/ec2-user/kubespray"
 
-    - name: Update Ansible Inventory
+    - name: Update Kubespray Inventory
       shell: declare -a IPS=(10.0.0.10 10.0.1.10-10.0.1.12) && CONFIG_FILE=inventory/mycluster/hosts.yml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
       args:
-        chdir: "/home/centos/kubespray"
+        chdir: "/home/ec2-user/kubespray"
 
-    - name: Install Kubernetes
-      shell: ansible-playbook -i inventory/mycluster/hosts.yml --become --become-user=root cluster.yml
-      args:
-        chdir: "/home/centos/kubespray"
+#    - name: Install Kubernetes
+#      shell: ansible-playbook -i inventory/mycluster/hosts.yml --become --become-user=root cluster.yml
+#      args:
+#        chdir: "/home/ec2-user/kubespray"

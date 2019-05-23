@@ -1,5 +1,6 @@
 ### AWS AMIs ###
 # Red Hat Enterprise Linux 8 (HVM), SSD Volume Type - ami-05220ffa0e7fce3d1
+# RHEL-7.6_HVM-20190515-x86_64-0-Hourly2-GP2 - ami-01a834fd83ae239ff
 # CentOS 7 Official - ami-0f2b4fc905b0bd1f1
 
 ### Links ###
@@ -10,7 +11,7 @@
 ### Variables ###
 variable "node_size" {
   description = "Default Node Size"
-  default = "t3.large"
+  default = "t3.medium"
 }
 
 variable "aws_region" {
@@ -39,8 +40,8 @@ variable "private_subnet_cidr" {
 }
 
 variable "ami" {
-  description = "Red Hat Enterprise Linux 8 (HVM), SSD Volume Type"
-  default = "ami-0f2b4fc905b0bd1f1"
+  description = "RHEL-7.6_HVM-20190515-x86_64-0-Hourly2-GP2"
+  default = "ami-01a834fd83ae239ff"
 }
 
 variable "science-eip" {
@@ -573,7 +574,9 @@ resource "aws_instance" "science-master" {
   associate_public_ip_address = true
   source_dest_check           = false
   private_ip                  = "10.0.0.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Science Master"
   }
@@ -593,7 +596,9 @@ resource "aws_instance" "science-node1" {
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Science Node 1"
   }
@@ -606,7 +611,9 @@ resource "aws_instance" "science-node2" {
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.11"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Science Node 2"
   }
@@ -619,7 +626,9 @@ resource "aws_instance" "science-node3" {
   vpc_security_group_ids = ["${aws_security_group.science-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.12"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Science Node 3"
   }
@@ -635,7 +644,9 @@ resource "aws_instance" "test-master" {
   associate_public_ip_address = true
   source_dest_check           = false
   private_ip                  = "10.0.0.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Test Master"
   }
@@ -655,7 +666,9 @@ resource "aws_instance" "test-node1" {
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Test Node 1"
   }
@@ -668,7 +681,9 @@ resource "aws_instance" "test-node2" {
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.11"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Test Node 2"
   }
@@ -681,7 +696,9 @@ resource "aws_instance" "test-node3" {
   vpc_security_group_ids = ["${aws_security_group.test-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.12"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Test Node 3"
   }
@@ -697,7 +714,9 @@ resource "aws_instance" "prod-master" {
   associate_public_ip_address = true
   source_dest_check           = false
   private_ip                  = "10.0.0.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Prod Master"
   }
@@ -717,7 +736,9 @@ resource "aws_instance" "prod-node1" {
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.10"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Prod Node 1"
   }
@@ -730,7 +751,9 @@ resource "aws_instance" "prod-node2" {
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.11"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Prod Node 2"
   }
@@ -743,7 +766,9 @@ resource "aws_instance" "prod-node3" {
   vpc_security_group_ids = ["${aws_security_group.prod-private-sg.id}"]
   source_dest_check = false
   private_ip = "10.0.1.12"
-
+  root_block_device {
+    delete_on_termination = true
+  }
   tags {
     Name = "Prod Node 3"
   }
