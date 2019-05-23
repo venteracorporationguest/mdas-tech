@@ -18,6 +18,11 @@ variable "aws_region" {
   default = "us-east-2"
 }
 
+variable "aws_subregion" {
+  description = "Region for the VPC"
+  default = "us-east-2a"
+}
+
 variable "vpc_cidr" {
   description = "CIDR for the VPC"
   default = "10.0.0.0/16"
@@ -103,7 +108,7 @@ resource "aws_vpc" "prod-vpc" {
 resource "aws_subnet" "science-public-subnet" {
   vpc_id = "${aws_vpc.science-vpc.id}"
   cidr_block ="${var.public_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Science Public Subnet"
@@ -113,7 +118,7 @@ resource "aws_subnet" "science-public-subnet" {
 resource "aws_subnet" "science-private-subnet" {
   vpc_id = "${aws_vpc.science-vpc.id}"
   cidr_block = "${var.private_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Science Private Subnet"
@@ -123,7 +128,7 @@ resource "aws_subnet" "science-private-subnet" {
 resource "aws_subnet" "test-public-subnet" {
   vpc_id = "${aws_vpc.test-vpc.id}"
   cidr_block ="${var.public_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Test Public Subnet"
@@ -133,7 +138,7 @@ resource "aws_subnet" "test-public-subnet" {
 resource "aws_subnet" "test-private-subnet" {
   vpc_id = "${aws_vpc.test-vpc.id}"
   cidr_block = "${var.private_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Test Private Subnet"
@@ -143,7 +148,7 @@ resource "aws_subnet" "test-private-subnet" {
 resource "aws_subnet" "prod-public-subnet" {
   vpc_id = "${aws_vpc.prod-vpc.id}"
   cidr_block ="${var.public_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Prod Public Subnet"
@@ -153,7 +158,7 @@ resource "aws_subnet" "prod-public-subnet" {
 resource "aws_subnet" "prod-private-subnet" {
   vpc_id = "${aws_vpc.prod-vpc.id}"
   cidr_block = "${var.private_subnet_cidr}"
-  availability_zone = "us-east-2a"
+  availability_zone = "${var.aws_subregion}"
 
   tags {
     Name = "Prod Private Subnet"

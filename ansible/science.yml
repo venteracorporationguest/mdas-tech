@@ -75,11 +75,11 @@
         chdir: "/home/centos/kubespray"
 
     - name: Update Ansible Inventory
-      shell: declare -a IPS=(10.0.1.10 10.0.1.11 10.0.1.12) && CONFIG_FILE=inventory/mycluster/hosts.yml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+      shell: declare -a IPS=(10.0.0.10 10.0.1.10-10.0.1.12) && CONFIG_FILE=inventory/mycluster/hosts.yml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
       args:
         chdir: "/home/centos/kubespray"
 
-#    - name: Install Kubernetes
-#      shell: ansible-playbook -i inventory/mycluster/hosts.yml --become --become-user=root cluster.yml
-#      args:
-#        chdir: "/home/centos/kubespray"
+    - name: Install Kubernetes
+      shell: ansible-playbook -i inventory/mycluster/hosts.yml --become --become-user=root cluster.yml
+      args:
+        chdir: "/home/centos/kubespray"
