@@ -2,10 +2,10 @@
 127.0.0.1
 
 [science]
-science.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
+science.mdas.ossys.com ansible_python_interpreter=/usr/bin/python3
 
 [test]
-test.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
+test.mdas.ossys.com ansible_python_interpreter=/usr/bin/python3
 
 [prod]
-prod.mdas.ossys.com ansible_python_interpreter=/usr/libexec/platform-python
+prod.mdas.ossys.com ansible_python_interpreter=/usr/bin/python3

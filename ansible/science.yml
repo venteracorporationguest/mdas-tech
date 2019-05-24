@@ -8,90 +8,67 @@
     - name: Copy Private SSH Key
       copy:
         src: ../keys/mdas
-        dest: /home/ec2-user/.ssh/id_rsa
-        owner: ec2-user
-        group: ec2-user
+        dest: /home/ubuntu/.ssh/id_rsa
+        owner: ubuntu
+        group: ubuntu
         mode: 0400
 
     - name: Copy Public SSH Key
       copy:
         src: ../keys/mdas.pub
-        dest: /home/ec2-user/.ssh/id_rsa.pub
-        owner: ec2-user
-        group: ec2-user
+        dest: /home/ubuntu/.ssh/id_rsa.pub
+        owner: ubuntu
+        group: ubuntu
         mode: 0644
 
-    - name: Update Yum Packages (3-5 mins)
-      yum:
-        name: "*"
+    - name: Install Python Pip
+      apt:
+        name: "python3-pip"
         state: latest
+        update_cache: yes
       become: yes
 
-#    - name: Install SCL
-#      yum:
-#        name: ec2-user-release-scl
-#        state: latest
+#    - name: Symlink Python3
+#      file:
+#        src: /usr/bin/python3
+#        dest: /usr/bin/python
+#        state: link
 #      become: yes
 
-    - name: Install Dependencies
-      yum:
-        name: "{{ packages }}"
-      vars:
-        packages:
-        - git
-        - python3
-        - python3-pip
-        state: latest
-      become: yes
-
-    - name: Symlink Pip3
-      file:
-        src: /usr/bin/pip3
-        dest: /usr/bin/pip
-        state: link
-      become: yes
-
-#    - name: Create Python36 Profile Enabler
-#      copy:
-#        dest: "/etc/profile.d/enable_python36.sh"
-#        content: |
-#          #!/bin/bash
-#          source scl_source enable rh-python36
+#    - name: Check Python Installed
+#      shell: python --version
+#      register: python_version
+#      ignore_errors: yes
+#
+#    - name: Set Python Default
+#      command: alternatives --set python /usr/bin/python3
 #      become: yes
-
-    - name: Check Python Installed
-      shell: python --version
-      register: python_version
-      ignore_errors: yes
-
-    - name: Set Python Default
-      command: alternatives --set python /usr/bin/python3
-      become: yes
-      when: python_version.stdout != "Python 3.6.8"
+#      when: python_version.stdout != "Python 3.6.8"
 
     - name: Clone Kubespray
       git:
         repo: https://github.com/kubernetes-sigs/kubespray
-        dest: /home/ec2-user/kubespray
+        dest: /home/ubuntu/kubespray
 
     - name: Install Kubespray Requirements
-      shell: pip install -r requirements.txt
+      pip:
+        requirements: requirements.txt
       args:
-        chdir: "/home/ec2-user/kubespray"
+        chdir: "/home/ubuntu/kubespray"
       become: yes
-      when: python_version.stdout == "Python 3.6.8"
 
     - name: Copy Cluster Config File
-      shell: cp -rfp inventory/sample inventory/mycluster
+      command: "cp -rfp inventory/sample inventory/mycluster"
       args:
-        chdir: "/home/ec2-user/kubespray"
+        chdir: "/home/ubuntu/kubespray"
 
     - name: Update Kubespray Inventory
       shell: declare -a IPS=(10.0.0.10 10.0.1.10-10.0.1.12) && CONFIG_FILE=inventory/mycluster/hosts.yml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
       args:
-        chdir: "/home/ec2-user/kubespray"
+        chdir: "/home/ubuntu/kubespray"
+        executable: /bin/bash
 
 #    - name: Install Kubernetes
 #      shell: ansible-playbook -i inventory/mycluster/hosts.yml --become --become-user=root cluster.yml
 #      args:
-#        chdir: "/home/ec2-user/kubespray"
+#        chdir: "/home/ubuntu/kubespray"

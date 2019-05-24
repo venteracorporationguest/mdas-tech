@@ -4,3 +4,5 @@ keys/
 ansible/*.retry
 .terraform
 terraform.*
+angular/.editorconfig
+angular/.gitignore
