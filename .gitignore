@@ -9,3 +9,4 @@ angular/.gitignore
 /.metadata/
 api/.project
 api/.pydevproject
+api/__pycache__/
