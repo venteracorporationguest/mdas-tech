@@ -8,30 +8,38 @@ from models.validator import Validator
 from models.mongo.user import User
 
 def prefix(pre):
-    return pre + '/user'
+    return pre + '/companies'
 
 async def categories(request):
     if request.method == 'GET':
         validator = Validator()
-        validator.hasRequiredFields([
-            'email', 'username', 'first_name',
-            'last_name', 'password'], request.json)
+        validator.hasRequiredFields('page', request.json)
 
         if not validator.hasErrors():
-            user = User(validator=validator)
-            user.active = True
-            user.last_login_date = datetime.datetime.utcnow()
-            user.email = request.json['email']
-            user.username = request.json['username']
-            user.first_name = request.json['first_name']
-            user.last_name = request.json['last_name']
-            user.password = request.json['password']
-
-            if not validator.hasErrors():
-                user.insert()
-
+            categories = [
+              {
+                "name": "Technology",
+                "value": 28
+              },
+              {
+                "name": "Consumer Staples",
+                "value": 14
+              },
+              {
+                "name": "Consumer Discretionary",
+                "value": 25
+              },
+              {
+                "name": "Health Care",
+                "value": 11
+              },
+              {
+                "name": "Aerospace",
+                "value": 22
+              }
+            ]
         return json(JSONResponse(success =  False if validator.hasErrors() else True,
-                                 data    =  None if validator.hasErrors() else {'user':user.dict(), 'token': user.token},
+                                 data    =  None if validator.hasErrors() else {'categories':categories},
                                  message =  'Error Saving User' if validator.hasErrors() else 'Successfully Saved User',
                                  errors  =  validator.errors if validator.hasErrors() else None).dict())
 
