@@ -9,3 +9,5 @@ angular/.gitignore
 /.metadata/
 api/.project
 api/.pydevproject
+angular/node_modules
+angular/coverage
