@@ -1,0 +1,14 @@
+<div class="row align-items-center">
+  <div class="mx-auto">
+    <div class="card">
+      <h3 class="card-header text-center heading-text">
+        Sectors
+      </h3>
+      <div class="card-img mx-auto">
+        <ngx-charts-tree-map [view]="CHART_CONFIG.chartView" [results]="sectors$ | async" [scheme]="CHART_CONFIG.domain"
+                             [gradient]="CHART_CONFIG.chartGradient" [labelFormatting]="formatLabel" (select)="onIndustryClicked($event)">
+        </ngx-charts-tree-map>
+      </div>
+    </div>
+  </div>
+</div>
