@@ -1,0 +1,25 @@
+<h4 class="text-center heading-text">
+    {{company.name}}
+</h4>
+<div class="card-deck mx-auto">
+    <div class="card col-3">
+        <div class="card-body">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad adipisci consequatur enim error est fugiat ipsa laboriosam, laborum libero molestiae necessitatibus omnis optio perspiciatis, rem sed unde vel voluptas voluptates?
+        </div>
+    </div>
+    <div class="card col-8">
+        <div class="card-header mt-2 mx-auto">
+            10-year Historical Growth
+        </div>
+        <div class="card-img">
+            <ngx-charts-line-chart [view]="CHART_CONFIG.lineChartView" [results]="performanceComparison$ | async"
+                                   [gradient]="CHART_CONFIG.lineChartGradient" [xAxis]="CHART_CONFIG.lineChartShowXAxis"
+                                   [yAxis]="CHART_CONFIG.lineChartShowYAxis" [legend]="CHART_CONFIG.lineChartShowLegend"
+                                   [showXAxisLabel]="CHART_CONFIG.lineChartShowXAxisLabel" [showYAxisLabel]="CHART_CONFIG.lineChartShowYAxisLabel"
+                                   [xAxisLabel]="'Year'" [yAxisLabel]="'Total % Change'" [scheme]="CHART_CONFIG.domain"
+                                   [autoScale]="CHART_CONFIG.lineChartAutoScale" [curve]="CHART_CONFIG.lineChartLineInterpolation">
+            </ngx-charts-line-chart>
+        </div>
+    </div>
+</div>
+

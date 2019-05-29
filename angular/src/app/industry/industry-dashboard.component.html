@@ -1,0 +1,13 @@
+<div class="text-center heading-text">
+  <h3>Companies in {{industry}} Industry</h3>
+</div>
+
+<div *ngFor="let company of companiesInIndustry$ | async; trackBy: trackByIdx" class="m-3">
+  <app-company [company]="company"></app-company>
+</div>
+
+<div infiniteScroll
+     [infiniteScrollDistance]="2"
+     [infiniteScrollThrottle]="50"
+     (scrolled)="loadNextBatch()">
+</div>

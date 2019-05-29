@@ -1,0 +1,21 @@
+<h4 class="text-center heading-text">
+  {{industry.name}}
+</h4>
+<div class="card-deck m-4">
+  <div class="card col-3">
+    <div class="card-body">
+      <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores debitis ducimus ea earum eius, eum expedita facere hic minus modi nemo nobis perspiciatis quo ratione recusandae repellendus reprehenderit sapiente!</div>
+    </div>
+  </div>
+  <div class="card col-8">
+    <div class="card-header mx-auto">Performance of {{industry.name}} Vs. Sector</div>
+    <div class="card-img">
+      <ngx-charts-bar-vertical-2d [view]="CHART_CONFIG.barChartView" [results]="performanceComparison$ | async" [scheme]="CHART_CONFIG.domain"
+                               [gradient]="CHART_CONFIG.barChartGradient" [xAxis]="CHART_CONFIG.barChartShowXAxis"
+                               [yAxis]="CHART_CONFIG.barChartShowYAxis" [legend]="CHART_CONFIG.barChartShowLegend"
+                               [showXAxisLabel]="CHART_CONFIG.barChartShowXAxisLabel" [showYAxisLabel]="CHART_CONFIG.barChartShowYAxisLabel"
+                               [xAxisLabel]="'Sector'" [yAxisLabel]="'% Change'">
+      </ngx-charts-bar-vertical-2d>
+    </div>
+  </div>
+</div>

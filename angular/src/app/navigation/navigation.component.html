@@ -1,0 +1,36 @@
+<div class="pos-f-t">
+    <nav *ngIf="hidden" class="sidebar">
+        <button class="btn-lg btn-primary" type="button" (click)="onToggleClicked()" aria-expanded="false" aria-label="Toggle navigation">
+        </button>
+    </nav>
+    <nav *ngIf="!hidden" class="sidebar overlay">
+        <button class="btn-lg btn-primary" type="button" (click)="onToggleClicked()" aria-expanded="true" aria-label="Toggle navigation">
+        </button>
+        <ul class="mt-2 text-indent list-unstyled">
+            <h5>Navigation</h5>
+            <li>
+                <a class="navbar-brand" routerLink="['/']">Home</a>
+            </li>
+            <li >
+                <h6>Sectors</h6>
+                <div>
+                    <ul *ngFor="let sector of sectors$ | async">
+                        <li class="list-unstyled">
+                            <a routerLink="/Sector/{{sector}}">{{sector}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li *ngIf="(industries$ | async) as industries">
+                <h6>Industries</h6>
+                <div>
+                    <ul *ngFor="let industry of industries">
+                        <li class="list-unstyled">
+                            <a routerLink="/Industry/{{industry}}">{{industry}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</div>
