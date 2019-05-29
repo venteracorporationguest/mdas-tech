@@ -4,7 +4,6 @@ keys/
 ansible/*.retry
 .terraform
 terraform.*
-terraform/.terraform.tfstate.lock.info
 angular/.editorconfig
 angular/.gitignore
 /.metadata/
