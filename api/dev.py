@@ -32,8 +32,8 @@ from app import app
 # print("Final Model Score on Test Data: " + str(round(experiment.test_score, 3)))
 
 if __name__ == '__main__':
-    context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
-    context.verify_mode = ssl.CERT_REQUIRED
-    context.load_cert_chain('./certs/server.crt', keyfile='./certs/server.key')
-    context.load_verify_locations(cafile='./certs/client.crt')
-    app.run(host='127.0.0.1', port=8000, ssl=context, debug=True, auto_restart=True)
+#     context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
+#     context.verify_mode = ssl.CERT_REQUIRED
+#     context.load_cert_chain('./certs/server.crt', keyfile='./certs/server.key')
+#     context.load_verify_locations(cafile='./certs/client.crt')
+    app.run(host='127.0.0.1', port=8000, debug=True, auto_restart=True)

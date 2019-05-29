@@ -28,27 +28,17 @@
         update_cache: yes
       become: yes
 
-#    - name: Symlink Python3
-#      file:
-#        src: /usr/bin/python3
-#        dest: /usr/bin/python
-#        state: link
-#      become: yes
-
-#    - name: Check Python Installed
-#      shell: python --version
-#      register: python_version
-#      ignore_errors: yes
-#
-#    - name: Set Python Default
-#      command: alternatives --set python /usr/bin/python3
-#      become: yes
-#      when: python_version.stdout != "Python 3.6.8"
-
     - name: Clone Kubespray
       git:
         repo: https://github.com/kubernetes-sigs/kubespray
         dest: /home/ubuntu/kubespray
+        version: release-2.10
+
+    - name: Enforce Ansible 2.7
+      lineinfile:
+        path: /home/ubuntu/kubespray/requirements.txt
+        regexp: '^ansible>=2.7.8'
+        line: ansible==2.7.10
 
     - name: Install Kubespray Requirements
       pip:

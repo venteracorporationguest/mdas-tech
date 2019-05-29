@@ -4,6 +4,7 @@ keys/
 ansible/*.retry
 .terraform
 terraform.*
+terraform/.terraform.tfstate.lock.info
 angular/.editorconfig
 angular/.gitignore
 /.metadata/
@@ -11,3 +12,4 @@ api/.project
 api/.pydevproject
 angular/node_modules
 angular/coverage
+api/__pycache__/
