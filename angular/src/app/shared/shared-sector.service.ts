@@ -7,6 +7,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class SharedSectorService {
 
   private sectorPerformance: BehaviorSubject<string> = new BehaviorSubject(undefined);
+  private sectors: BehaviorSubject<string[]> = new BehaviorSubject(undefined);
 
   constructor() { }
 
@@ -17,4 +18,13 @@ export class SharedSectorService {
   getSectorPerformance(): Observable<string> {
     return this.sectorPerformance.asObservable();
   }
+
+  updateSectors(sectors: string[]): void {
+    this.sectors.next(sectors);
+  }
+
+  getSectors(): Observable<string[]> {
+    return this.sectors.asObservable();
+  }
+
 }

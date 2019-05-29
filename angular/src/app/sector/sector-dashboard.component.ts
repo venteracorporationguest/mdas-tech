@@ -2,9 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {SectorService} from './sector.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CompanyData} from '../shared/domain/company-data';
+import {DetailedData} from '../shared/domain/detailed-data';
 import {SharedSectorService} from '../shared/shared-sector.service';
 import {CHART_COLORS} from '../shared/chart-colors';
+import {SharedIndustryService} from '../shared/shared-industry.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-sector',
@@ -15,9 +17,9 @@ export class SectorDashboardComponent implements OnInit {
 
   sector: string;
   sectorBreakdown$: Observable<string>;
-  industriesInSector$: BehaviorSubject<CompanyData[]> = new BehaviorSubject(undefined);
+  industriesInSector$: BehaviorSubject<DetailedData[]> = new BehaviorSubject(undefined);
 
-  private fullIndustryList: CompanyData[];
+  private fullIndustryList: DetailedData[];
   private batchSize = 5;
   private industriesLoaded = 0;
 
@@ -30,22 +32,30 @@ export class SectorDashboardComponent implements OnInit {
 
   constructor(private sectorService: SectorService,
               private sharedSectorService: SharedSectorService,
+              private sharedIndustryService: SharedIndustryService,
               private route: ActivatedRoute,
               private router: Router) { }
 
   ngOnInit() {
-    this.sector = this.route.snapshot.paramMap.get('sector');
-    this.sectorService.getSectorPerformance(this.sector).subscribe(
+    this.route.paramMap.subscribe(
         result => {
-          this.sharedSectorService.updateSectorPerformance(result);
-        });
-    this.sectorBreakdown$ = this.sectorService.getIndustryBreakdown(this.sector);
-    this.sectorService.getIndustriesInSector(this.sector).subscribe(
-        result => {
-          this.fullIndustryList = result;
-          this.industriesInSector$.next(result.slice(0, this.batchSize));
-          this.industriesLoaded = this.batchSize;
-        });
+          this.sector = result.get('sector');
+          this.sectorService.getSectorPerformance(this.sector).subscribe(
+              result => {
+                this.sharedSectorService.updateSectorPerformance(result);
+              });
+          this.sectorBreakdown$ = this.sectorService.getIndustryBreakdown(this.sector);
+          this.sectorService.getIndustriesInSector(this.sector).subscribe(
+              result => {
+                this.fullIndustryList = result;
+                this.sharedIndustryService.updateIndustries(result.map(val => val.name));
+                this.industriesInSector$.next(result.slice(0, this.batchSize));
+                this.industriesLoaded = this.batchSize;
+              }, error => {
+                  this.sharedIndustryService.updateIndustries(undefined);
+              });
+        }
+    );
   }
 
   formatLabel(section): string {

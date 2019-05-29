@@ -1,4 +1,4 @@
-export interface CompanyData {
+export interface DetailedData {
 	name: string;
 	symbol: string;
 }

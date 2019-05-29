@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {CompanyData} from '../shared/domain/company-data';
+import {DetailedData} from '../shared/domain/detailed-data';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class IndustryService {
     return this.http.get<string>(url);
   }
 
-  getCompaniesInIndustry(industry: string): Observable<CompanyData[]> {
+  getCompaniesInIndustry(industry: string): Observable<DetailedData[]> {
     const url = `${environment.baseURL}industry/companies?industry=${industry}`;
-    return this.http.get<CompanyData[]>(url);
+    return this.http.get<DetailedData[]>(url);
   }
 }

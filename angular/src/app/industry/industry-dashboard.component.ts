@@ -2,7 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {IndustryService} from './industry.service';
 import {SharedIndustryService} from '../shared/shared-industry.service';
-import {CompanyData} from '../shared/domain/company-data';
+import {DetailedData} from '../shared/domain/detailed-data';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-industry-dashboard',
@@ -11,27 +12,38 @@ import {CompanyData} from '../shared/domain/company-data';
 })
 export class IndustryDashboardComponent implements OnInit {
 
-  @Input() industryName: string = 'Technology';
-  companiesInIndustry$: BehaviorSubject<CompanyData[]> = new BehaviorSubject(undefined);
+  @Input() industry: string;
+  companiesInIndustry$: BehaviorSubject<DetailedData[]> = new BehaviorSubject(undefined);
 
-  private fullCompanyList: CompanyData[];
+  private fullCompanyList: DetailedData[];
   private batchSize = 5;
   private companiesLoaded = 0;
 
   constructor(private industryService: IndustryService,
-              private sharedIndustryService: SharedIndustryService) {
+              private sharedIndustryService: SharedIndustryService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.industryService.getIndustryPerformance(this.industryName)
-        .subscribe(result => this.sharedIndustryService.updateIndustryPerformance(result));
-    this.industryService.getCompaniesInIndustry(this.industryName).subscribe(
+    this.route.paramMap.subscribe(
         result => {
-          this.fullCompanyList = result;
-          this.companiesInIndustry$.next(result.slice(0, this.batchSize));
-          this.companiesLoaded = this.batchSize;
-        }
-    );
+          this.industry = result.get('industry');
+          this.industryService.getIndustryPerformance(this.industry)
+              .subscribe(result => {
+                  this.sharedIndustryService.updateIndustryPerformance(result);
+              }, error => {
+                  this.sharedIndustryService.updateIndustryPerformance(undefined);
+              });
+          this.industryService.getCompaniesInIndustry(this.industry).subscribe(
+              result => {
+                this.fullCompanyList = result;
+                this.companiesInIndustry$.next(result.slice(0, this.batchSize));
+                this.companiesLoaded = this.batchSize;
+              }, error => {
+                  this.companiesInIndustry$.next(undefined);
+              }
+          );
+        });
   }
 
   loadNextBatch(): void {

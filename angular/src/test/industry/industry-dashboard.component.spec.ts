@@ -6,6 +6,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {IndustryService} from '../../app/industry/industry.service';
 import {SharedIndustryService} from '../../app/shared/shared-industry.service';
 import {of} from 'rxjs';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('IndustryDashboardComponent', () => {
   let component: IndustryDashboardComponent;
@@ -27,7 +28,7 @@ describe('IndustryDashboardComponent', () => {
         {provide: IndustryService, useValue: partialIndustryService},
         {provide: SharedIndustryService, useValue: partialSharedIndustryService}
       ],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();

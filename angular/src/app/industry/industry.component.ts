@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {SharedSectorService} from '../shared/shared-sector.service';
-import {CompanyData} from '../shared/domain/company-data';
+import {DetailedData} from '../shared/domain/detailed-data';
 import {IndustryService} from './industry.service';
 import {CHART_COLORS} from '../shared/chart-colors';
 
@@ -13,7 +13,7 @@ import {CHART_COLORS} from '../shared/chart-colors';
 })
 export class IndustryComponent implements OnInit {
 
-  @Input() industry: CompanyData;
+  @Input() industry: DetailedData;
   performanceComparison$: Observable<any>;
 
   CHART_CONFIG = {

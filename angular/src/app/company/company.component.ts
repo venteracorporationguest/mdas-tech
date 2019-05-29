@@ -4,7 +4,7 @@ import {Observable, zip} from 'rxjs';
 import * as shape from 'd3-shape';
 import {map, tap} from 'rxjs/operators';
 import {SharedIndustryService} from '../shared/shared-industry.service';
-import {CompanyData} from '../shared/domain/company-data';
+import {DetailedData} from '../shared/domain/detailed-data';
 import {CHART_COLORS} from '../shared/chart-colors';
 
 @Component({
@@ -14,7 +14,7 @@ import {CHART_COLORS} from '../shared/chart-colors';
 })
 export class CompanyComponent implements OnInit {
 
-  @Input() company: CompanyData;
+  @Input() company: DetailedData;
   performanceComparison$: Observable<string>;
 
   CHART_CONFIG = {
@@ -38,13 +38,7 @@ export class CompanyComponent implements OnInit {
     const industryPerformance$ = this.sharedIndustryService.getIndustryPerformance();
     this.performanceComparison$ = zip(companyPerformance$, industryPerformance$)
         .pipe(
-            tap(val => this.calculateMetrics(val)),
             map(val => val[0].concat(val[1]))
         );
-  }
-
-  private calculateMetrics(input) {
-    console.log(input);
-    return '';
   }
 }
