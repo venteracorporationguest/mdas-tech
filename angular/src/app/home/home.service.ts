@@ -12,7 +12,7 @@ export class HomeService {
   constructor(private http: HttpClient) { }
 
   getAllSectors(): Observable<Counts[]> {
-    const url = `${environment.baseURL}sectors`;
+    const url = `${environment.baseURL}sectors/list`;
     return this.http.get<Counts[]>(url);
   }
 }

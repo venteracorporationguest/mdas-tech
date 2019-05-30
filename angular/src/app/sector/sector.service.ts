@@ -12,17 +12,17 @@ export class SectorService {
   constructor(private http: HttpClient) { }
 
   getIndustryBreakdown(sector: string): Observable<string> {
-    const url = `${environment.baseURL}sector/breakdown/${sector}`;
+    const url = `${environment.baseURL}sectors/breakdown?sector=${sector}`;
     return this.http.get<string>(url);
   }
 
   getIndustriesInSector(sector: string): Observable<DetailedData[]> {
-    const url = `${environment.baseURL}sector/industries?sector=${sector}`;
+    const url = `${environment.baseURL}sectors/industries?sector=${sector}`;
     return this.http.get<DetailedData[]>(url);
   }
 
   getSectorPerformance(sector: string): Observable<string> {
-    const url = `${environment.baseURL}performance/sector/${sector}`;
+    const url = `${environment.baseURL}sectors/performance?sector=${sector}`;
     return this.http.get<string>(url);
   }
 }

@@ -39,7 +39,7 @@ describe('CompanyComponent', () => {
     component.ngOnInit();
 
     component.performanceComparison$.subscribe(result => {
-      expect(result).toEqual('{stock}{industry}');
+      expect(result).toEqual(['{stock}', '{industry}']);
     });
   }));
 

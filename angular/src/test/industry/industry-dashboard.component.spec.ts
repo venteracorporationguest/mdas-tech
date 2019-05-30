@@ -44,16 +44,4 @@ describe('IndustryDashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  xit('should not load another batch of companies',() => {
-    component.loadNextBatch();
-
-    component.companiesInIndustry$.subscribe(result => expect(result.length).toEqual(5));
-  });
-
-  xit('should load next batch of companies',() => {
-    component.loadNextBatch();
-
-    component.companiesInIndustry$.subscribe(result => expect(result.length).toEqual(10));
-  });
 });

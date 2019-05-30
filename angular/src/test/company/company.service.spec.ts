@@ -16,12 +16,12 @@ describe('CompanyService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call http://localhost:8080/performance/stock/test',
+  it('should call http://localhost:8000/api/companies/performance?company=test',
       inject([HttpClient, CompanyService], (httpMock, companyService) => {
           spyOn(httpMock, 'get');
 
-          companyService.getPerformanceBySymbol('Test');
+          companyService.getPerformanceBySymbol('test');
 
-          expect(httpMock.get).toHaveBeenCalledWith('http://localhost:8080/performance/stock/Test');
+          expect(httpMock.get).toHaveBeenCalledWith('http://localhost:8000/api/companies/performance?company=test');
   }));
 });

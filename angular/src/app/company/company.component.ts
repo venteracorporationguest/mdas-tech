@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CompanyService} from './company.service';
 import {Observable, zip} from 'rxjs';
 import * as shape from 'd3-shape';
-import {map, tap} from 'rxjs/operators';
 import {SharedIndustryService} from '../shared/shared-industry.service';
 import {DetailedData} from '../shared/domain/detailed-data';
 import {CHART_COLORS} from '../shared/chart-colors';
@@ -15,7 +14,7 @@ import {CHART_COLORS} from '../shared/chart-colors';
 export class CompanyComponent implements OnInit {
 
   @Input() company: DetailedData;
-  performanceComparison$: Observable<string>;
+  performanceComparison$: Observable<[string, string]>;
 
   CHART_CONFIG = {
     lineChartView: [900, 450],
@@ -36,9 +35,6 @@ export class CompanyComponent implements OnInit {
   ngOnInit() {
     const companyPerformance$ = this.companyService.getPerformanceBySymbol(this.company.symbol);
     const industryPerformance$ = this.sharedIndustryService.getIndustryPerformance();
-    this.performanceComparison$ = zip(companyPerformance$, industryPerformance$)
-        .pipe(
-            map(val => val[0].concat(val[1]))
-        );
+    this.performanceComparison$ = zip(companyPerformance$, industryPerformance$);
   }
 }

@@ -19,14 +19,14 @@ describe('IndustryService', () => {
         spyOn(http, 'get').and.stub();
         service.getIndustryPerformance('Test');
 
-        expect(http.get).toHaveBeenCalledWith('http://localhost:8080/performance/industry/Test');
+        expect(http.get).toHaveBeenCalledWith('http://localhost:8000/api/industries/performance?industry=Test');
   }));
 
-  it('should call list of companies in Industry endpoitn with test as param',
+  it('should call list of companies in Industry endpoint with test as param',
       inject([IndustryService, HttpClient], (service: IndustryService, http: HttpClient) => {
         spyOn(http, 'get').and.stub();
         service.getCompaniesInIndustry('Test');
 
-        expect(http.get).toHaveBeenCalledWith('http://localhost:8080/industry/companies?industry=Test');
+        expect(http.get).toHaveBeenCalledWith('http://localhost:8000/api/industries/companies?industry=Test');
   }));
 });

@@ -11,7 +11,7 @@ export class CompanyService {
   constructor(private http: HttpClient) { }
 
   getPerformanceBySymbol(symbol: string): Observable<string> {
-    const url = `${environment.baseURL}performance/stock/${symbol}`;
+    const url = `${environment.baseURL}companies/performance?company=${symbol}`;
     return this.http.get<string>(url);
   }
 }
