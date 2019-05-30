@@ -1,9 +1,0 @@
-{
-  "/performance/stock/:symbol": "/stockPerformance?name=:symbol",
-  "/performance/industry/:industry": "/industryPerformance?name=:industry",
-  "/performance/sector/Technology": "/technologySectorPerformance",
-  "/industry/companies?industry=Technology": "/companiesInTechIndustry",
-  "/sector/breakdown/Technology": "/sectorBreakdownTechnology",
-  "/sector/industries?sector=Technology": "/industriesInTechSector",
-  "/sectors": "/sectorsWithIndustriesCount"
-}
